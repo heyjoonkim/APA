@@ -1,0 +1,58 @@
+
+seed: 1234
+logging_level: INFO
+
+model:
+  name: meta-llama/Llama-2-7b-hf
+  offload_path: YOUR/OFFLOAD/PATH/
+  cache_path: YOUR/CACHE/PATH/
+  tensor_parallel_size: 4
+
+path: 
+  data: YOUR/DATA/PATH/
+  output: YOUR/OUTPUT/PATH/
+
+
+dataset:
+  name: ambigqa
+
+
+pipeline:
+  stage_index: 0
+
+  explicit:
+    # template for explicit prediction
+    template_id: 0
+    evaluation_method: rouge
+    correct_threshold: 0.3
+
+  implicit:
+    # ambiguity를 측정하기 위한 implicit measure의 종류
+    # current best: method_id=1
+    method_id: 0
+    disambiguation_template_id: 0
+    generation_template_id: 0
+    threshold: 0.1
+    aggregate_method: 'mean'
+
+  explanation:
+    template_id: 0
+
+generation:
+  # 한 입력에 대해서 몇개를 생성할 것인가? (num total generations)
+  num_generations_per_prompt: 3
+  # 한 번에 몇개를 생성할 것인가? (single generation)
+  num_single_generation: 3
+  max_new_tokens: 100 
+  temperature: 1.0
+
+
+ablation_methods: [0, 1, 2]
+
+
+train:
+  num_train_epochs: 2
+  per_device_train_batch_size: 8
+  gradient_accumulation_steps: 2
+  learning_rate: 0.001
+  
